@@ -1,0 +1,26 @@
+[
+    {
+        "username": "admin",
+        "password": "password123",
+        "name": "สมชาย รักบริการ",
+        "role": "staff"
+    },
+    {
+        "username": "it_staff",
+        "password": "itpassword",
+        "name": "สมเกียรติ ไอที",
+        "role": "staff"
+    },
+    {
+        "username": "user1",
+        "password": "userpassword",
+        "name": "นพดล เจริญสุข",
+        "role": "user"
+    },
+    {
+        "username": "user2",
+        "password": "userpassword",
+        "name": "สมหญิง รักเรียน",
+        "role": "user"
+    }
+]

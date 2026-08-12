@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายการ Ticket - IT Helpdesk</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Shared Header -->
+        <header id="main-header">
+            <div class="logo">
+                <i class="fa-solid fa-headset"></i>
+                <span>IT HELPDESK</span>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="report.html" class="nav-item user-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
+                <a href="tickets.html" class="nav-item user-only"><i class="fa-solid fa-list-check"></i> รายการของคุณ</a>
+                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการ Ticket</a>
+                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> คลังความรู้ (Knowledge Base)</a>
+            </nav>
+
+            <div class="user-profile">
+                <span id="profile-role" class="role-badge">Role</span>
+                <span id="profile-name" style="font-weight: 500; font-size: 0.95rem;">Username</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
+                </button>
+            </div>
+        </header>
+
+        <main style="flex-grow: 1; display: flex; flex-direction: column;">
+            <section id="tickets-view" class="view-section active">
+                <div class="panel-card">
+                    <h3 class="panel-title"><i class="fa-solid fa-receipt"></i> รายการคำสั่งงานแจ้งซ่อม (Tickets)</h3>
+
+                    <!-- Toolbar filters and searches -->
+                    <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-tickets" class="form-control" placeholder="ค้นหาตามรหัส, อาการ, ผู้แจ้ง...">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="filter-group">
+                                <button class="filter-btn active" onclick="setFilter('all')">ทั้งหมด</button>
+                                <button class="filter-btn" onclick="setFilter('pending')">รอดำเนินการ</button>
+                                <button class="filter-btn" onclick="setFilter('inprogress')">กำลังแก้ไข</button>
+                                <button class="filter-btn" onclick="setFilter('resolved')">แก้ไขแล้ว</button>
+                            </div>
+
+                            <button id="btn-export-csv" class="btn-secondary" style="padding: 8px 12px; height: 38px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);">
+                                <i class="fa-solid fa-file-excel" style="color: #10b981;"></i> ส่งออก Excel (CSV)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tickets Table -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>รหัส</th>
+                                    <th>หัวข้อปัญหา</th>
+                                    <th>ผู้แจ้ง / แผนก</th>
+                                    <th>ความเร่งด่วน</th>
+                                    <th>สถานะ</th>
+                                    <th>วันที่แจ้ง</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tickets-tbody">
+                                <!-- Loaded dynamically via app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Details/Update Modal Overlay -->
+    <div id="ticket-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> รายละเอียดคำขอซ่อม <span id="modal-ticket-id" style="color:var(--primary); margin-left:5px;">IT-XXX</span></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>หัวข้อปัญหา</label>
+                        <div id="modal-title">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>วันเวลาที่แจ้ง</label>
+                        <div id="modal-date">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>ผู้แจ้งปัญหา</label>
+                        <div id="modal-reporter">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>แผนก / ฝ่าย</label>
+                        <div id="modal-dept">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>อุปกรณ์ / รหัสเครื่อง</label>
+                        <div id="modal-equip">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>ระดับความเร่งด่วน</label>
+                        <div id="modal-urgency">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <label>สถานะงานปัจจุบัน</label>
+                        <div id="modal-status">-</div>
+                    </div>
+                    <div class="detail-item full-width">
+                        <label>อาการแจ้งซ่อมอย่างละเอียด</label>
+                        <div id="modal-details" class="description-box">-</div>
+                    </div>
+                    
+                    <!-- Image Attachment Preview -->
+                    <div id="modal-image-section" class="detail-item full-width" style="display: none; margin-top: 10px;">
+                        <label>รูปภาพแนบประกอบ (คลิกเพื่อดูรูปใหญ่)</label>
+                        <div style="margin-top: 5px;">
+                            <img id="modal-image" src="" alt="Attached Screenshot" style="max-width: 100%; max-height: 220px; border-radius: 8px; border: 1px solid var(--bg-card-border); cursor: pointer; transition: var(--transition);" onclick="window.open(this.src)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Logs -->
+                <div class="resolution-section" style="border-top: 1px dashed var(--bg-card-border); padding-top: 15px; margin-top: 15px;">
+                    <h5 style="margin-bottom: 12px; color: #a5b4fc; font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-clock-rotate-left"></i> ไทม์ไลน์ความเคลื่อนไหว (Activity Timeline)</h5>
+                    <div id="modal-timeline-list" class="timeline-list">
+                        <!-- Appended dynamically via app.js -->
+                    </div>
+                </div>
+
+                <!-- Resolved Info -->
+                <div id="modal-resolved-section" class="resolution-section" style="display: none;">
+                    <div class="resolution-box">
+                        <h5><i class="fa-solid fa-circle-check"></i> รายละเอียดบันทึกการแก้ไขปัญหา</h5>
+                        <p id="modal-resolution-text">-</p>
+                        <div id="modal-resolved-date" class="resolution-meta">เสร็จเมื่อ: -</div>
+                    </div>
+                </div>
+
+                <!-- IT Staff Form -->
+                <div id="staff-update-section" class="resolution-section" style="display: none; border-top: 1px dashed var(--bg-card-border);">
+                    <h4 style="margin-bottom: 15px; color:#a5b4fc;"><i class="fa-solid fa-user-shield"></i> ส่วนของเจ้าหน้าที่จัดการงาน</h4>
+                    
+                    <form id="ticket-update-form">
+                        <div class="form-group">
+                            <label for="update-status">เปลี่ยนสถานะงาน</label>
+                            <select id="update-status" class="form-control" style="background-color:#1e293b;">
+                                <option value="รอดำเนินการ">รอดำเนินการ</option>
+                                <option value="กำลังแก้ไข">กำลังแก้ไข</option>
+                                <option value="แก้ไขแล้ว">แก้ไขแล้ว</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="update-resolution">บันทึกวิธีการแก้ไขของเจ้าหน้าที่ <span style="color:#ef4444;">*</span></label>
+                            <textarea id="update-resolution" class="form-control" style="background-color:#1e293b;" placeholder="กรุณาระบุรายละเอียดการซ่อม เมื่อแก้ไขสำเร็จแล้ว"></textarea>
+                        </div>
+
+                        <div class="action-group">
+                            <button type="button" class="btn-secondary modal-cancel">ยกเลิก</button>
+                            <button type="submit" class="btn-submit" style="width: auto; margin-top: 0; padding: 10px 20px;">
+                                <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
