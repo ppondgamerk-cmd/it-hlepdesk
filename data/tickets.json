@@ -116,5 +116,49 @@
         "status": "รอดำเนินการ"
       }
     ]
+  },
+  {
+    "id": "IT-005",
+    "title": "Test Reorganization Ticket",
+    "reporter": "นพดล เจริญสุข",
+    "department": "Finance",
+    "equipment": "PC-TEST-01",
+    "details": "This is a test ticket to verify system routing after the file reorganization.",
+    "urgency": "สูง",
+    "status": "รอดำเนินการ",
+    "createdAt": "2026-08-12T17:46:42.546Z",
+    "image": "",
+    "resolution": "",
+    "resolvedAt": null,
+    "logs": [
+      {
+        "time": "2026-08-12T17:46:42.546Z",
+        "text": "แจ้งปัญหาและเปิดคำขอแจ้งซ่อมสำเร็จ",
+        "user": "นพดล เจริญสุข",
+        "status": "รอดำเนินการ"
+      }
+    ]
+  },
+  {
+    "id": "IT-006",
+    "title": "Root verified successfully",
+    "reporter": "นพดล เจริญสุข",
+    "department": "Finance",
+    "equipment": "PC-TEST-05",
+    "details": "Testing workspace root data folder and root dotenv configurations.",
+    "urgency": "สูง",
+    "status": "รอดำเนินการ",
+    "createdAt": "2026-08-12T19:06:21.150Z",
+    "image": "",
+    "resolution": "",
+    "resolvedAt": null,
+    "logs": [
+      {
+        "time": "2026-08-12T19:06:21.150Z",
+        "text": "แจ้งปัญหาและเปิดคำขอแจ้งซ่อมสำเร็จ",
+        "user": "นพดล เจริญสุข",
+        "status": "รอดำเนินการ"
+      }
+    ]
   }
 ]
