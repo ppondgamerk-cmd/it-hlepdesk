@@ -42,6 +42,8 @@ Session เป็น cookie HttpOnly / SameSite=Strict อายุ 8 ชั่�
 
 ตั้ง `APP_ORIGIN` เป็น URL ของเว็บเมื่อผ่าน reverse proxy และใช้ HTTPS ใน production (`NODE_ENV=production`) Vercel ต้องใช้ Supabase เพราะไฟล์ JSON ไม่ใช่พื้นที่เก็บข้อมูลถาวร ระบบจะไม่เริ่มเมื่อ Vercel ถูกตั้งให้ใช้ JSON
 
+เมื่อมีหลายโดเมน ให้คั่น URL ใน `APP_ORIGIN` ด้วย comma เช่น `https://it-helpdesk-pondz2.vercel.app,https://it-helpdesk-beige-five.vercel.app` ระบบตรวจตรงทั้ง URL และไม่อนุญาตเว็บไซต์อื่น
+
 การจำกัดการล็อกอินเป็น in-memory 15 ครั้งต่อ IP ใน 15 นาที เหมาะกับหนึ่ง process หากกระจายหลาย instance ควรเพิ่ม rate limit ที่ gateway หรือ shared storage การอัปเดตงานถูกเรียงลำดับภายใน process; หากใช้หลาย instance ต้องเพิ่ม database transaction / optimistic concurrency ก่อนใช้งาน
 
 ## ตรวจสอบ

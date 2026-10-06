@@ -14,7 +14,8 @@ app.use((req, res, next) => {
     if (req.path.startsWith('/api/')) {
         res.setHeader('Cache-Control', 'no-store');
         const origin = req.headers.origin;
-        if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && origin && origin !== `${req.protocol}://${req.get('host')}` && origin !== process.env.APP_ORIGIN) return res.status(403).json({ error: 'แหล่งที่มาของคำขอไม่ถูกต้อง' });
+        const publicOrigins = (process.env.APP_ORIGIN || '').split(',').map(value => value.trim()).filter(Boolean);
+        if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && origin && origin !== `${req.protocol}://${req.get('host')}` && !publicOrigins.includes(origin)) return res.status(403).json({ error: 'แหล่งที่มาของคำขอไม่ถูกต้อง' });
     }
     next();
 });

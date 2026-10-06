@@ -87,13 +87,18 @@ test('helpdesk authentication and role workflows', async t => {
     });
     await t.test('configured public origin can log in behind HTTPS proxy', async () => {
         const previous = process.env.APP_ORIGIN;
-        process.env.APP_ORIGIN = 'https://it-helpdesk-pondz2.vercel.app';
+        const origins = ['https://it-helpdesk-pondz2.vercel.app', 'https://it-helpdesk-beige-five.vercel.app'];
+        process.env.APP_ORIGIN = origins.join(', ');
         try {
-            const result = await request('/api/auth/login', { method: 'POST', headers: { Origin: process.env.APP_ORIGIN }, body: { username: 'staff', password: 'test-password-123' } });
-            assert.equal(result.status, 200);
-            assert.equal(result.data.role, 'staff');
-            assert.equal((await request('/api/auth/logout', { method: 'POST', cookie: result.cookie, headers: { Origin: process.env.APP_ORIGIN } })).status, 200);
-            assert.equal((await request('/api/auth/login', { method: 'POST', headers: { Origin: 'https://attacker.invalid' }, body: { username: 'staff', password: 'test-password-123' } })).status, 403);
+            for (const origin of origins) {
+                const result = await request('/api/auth/login', { method: 'POST', headers: { Origin: origin }, body: { username: 'staff', password: 'test-password-123' } });
+                assert.equal(result.status, 200);
+                assert.equal(result.data.role, 'staff');
+                assert.equal((await request('/api/auth/logout', { method: 'POST', cookie: result.cookie, headers: { Origin: origin } })).status, 200);
+            }
+            for (const origin of ['https://attacker.invalid', 'https://it-helpdesk-beige-five.vercel.app.attacker.invalid']) {
+                assert.equal((await request('/api/auth/login', { method: 'POST', headers: { Origin: origin }, body: { username: 'staff', password: 'test-password-123' } })).status, 403);
+            }
         } finally {
             if (previous === undefined) delete process.env.APP_ORIGIN; else process.env.APP_ORIGIN = previous;
         }
