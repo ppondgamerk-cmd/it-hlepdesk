@@ -12,6 +12,12 @@
   ],
   "routes": [
     {
+      "src": "/(.*)",
+      "has": [{ "type": "host", "value": "it-helpdesk-beige-five\\.vercel\\.app" }],
+      "headers": { "Location": "https://it-helpdesk-pondz2.vercel.app/$1" },
+      "status": 308
+    },
+    {
       "src": "/",
       "dest": "frontend/index.html"
     },

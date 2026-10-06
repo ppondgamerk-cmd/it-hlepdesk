@@ -38,6 +38,8 @@ Session เป็น cookie HttpOnly / SameSite=Strict อายุ 8 ชั่�
 
 ## Supabase / Vercel
 
+โดเมนหลักคือ `https://it-helpdesk-pondz2.vercel.app` ลิงก์ `it-helpdesk-beige-five.vercel.app` ส่งต่อมายังโดเมนหลักพร้อม path เดิม เพื่อให้เข้าสู่ระบบและใช้งานบนโดเมนเดียวกัน
+
 รัน `data/setup.sql` สำหรับฐานข้อมูลใหม่ แล้วรัน `data/auth-migration.sql` (ฐานข้อมูลเดิมรันเฉพาะ migration) ตั้ง `USE_SUPABASE=true`, `SUPABASE_URL` และ `SUPABASE_SECRET_KEY` หรือ service-role `SUPABASE_KEY` ใน environment ฝั่งเซิร์ฟเวอร์ ห้ามใช้ publishable key สำหรับ backend นี้ ตารางถูกปิดการเข้าถึงผ่าน anon/authenticated โดย migration
 
 ตั้ง `APP_ORIGIN` เป็น URL ของเว็บเมื่อผ่าน reverse proxy และใช้ HTTPS ใน production (`NODE_ENV=production`) Vercel ต้องใช้ Supabase เพราะไฟล์ JSON ไม่ใช่พื้นที่เก็บข้อมูลถาวร ระบบจะไม่เริ่มเมื่อ Vercel ถูกตั้งให้ใช้ JSON
