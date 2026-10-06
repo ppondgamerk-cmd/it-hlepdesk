@@ -16,7 +16,7 @@
         <section class="auth-card">
             <div class="eyebrow">WELCOME BACK</div>
             <h2>เข้าสู่ระบบ</h2>
-            <p class="auth-description">ใช้บัญชีที่ได้รับจากผู้ดูแลระบบเพื่อเริ่มใช้งาน</p>
+            <p class="auth-description">เข้าสู่ระบบเพื่อแจ้งปัญหาและติดตามงานของคุณ</p>
             <form id="auth-login-form">
                 <div class="form-group"><label for="login-username">ชื่อผู้ใช้</label><input id="login-username" class="form-control" autocomplete="username" maxlength="40" placeholder="ชื่อบัญชีของคุณ" required></div>
                 <div class="form-group"><label for="login-password">รหัสผ่าน</label><div class="password-field"><input type="password" id="login-password" class="form-control" autocomplete="current-password" maxlength="256" placeholder="รหัสผ่านของคุณ" required><button type="button" class="password-toggle" aria-label="แสดงรหัสผ่าน" aria-pressed="false" onclick="togglePassword(this)">แสดง</button></div></div>
@@ -28,7 +28,7 @@
                 <p class="muted">เลือกบัญชีเพื่อกรอกชื่อผู้ใช้และรหัสผ่าน แล้วกดเข้าสู่ระบบ</p>
                 <div id="demo-account-list"></div>
             </section>
-            <p class="auth-help">ยังไม่มีบัญชี หรือลืมรหัสผ่าน?<br>ติดต่อผู้ดูแลระบบขององค์กร</p>
+            <div class="auth-actions"><button type="button" onclick="openAccountDialog('register')">สมัครสมาชิก</button><button type="button" onclick="openAccountDialog('reset')">ลืมรหัสผ่าน?</button></div>
             <div class="auth-footer">สิทธิ์การใช้งานจะกำหนดตามบัญชีของคุณ</div>
         </section>
     </main>

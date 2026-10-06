@@ -103,6 +103,30 @@ test('helpdesk authentication and role workflows', async t => {
             if (previous === undefined) delete process.env.APP_ORIGIN; else process.env.APP_ORIGIN = previous;
         }
     });
+    await t.test('self registration and single-use recovery preserve role and revoke sessions', async () => {
+        const body = { username: 'selfuser', name: 'Self User', password: 'self-password-123', role: 'admin', active: false };
+        assert.equal((await request('/api/auth/register', { method: 'POST', body: { ...body, password: 'short' } })).status, 400);
+        const registered = await request('/api/auth/register', { method: 'POST', body });
+        assert.equal(registered.status, 201);
+        assert.equal(registered.data.user.role, 'user'); assert.equal(registered.data.user.active, true);
+        assert.equal(registered.data.user.recoveryHash, undefined);
+        assert.match(registered.data.recoveryCode, /^[A-F0-9]{8}(-[A-F0-9]{8}){7}$/);
+        assert.equal((await request('/api/auth/register', { method: 'POST', body })).status, 409);
+        assert.ok(!fs.readFileSync(path.join(root, 'users.json'), 'utf8').includes(registered.data.recoveryCode));
+        const logged = await request('/api/auth/login', { method: 'POST', body: { username: body.username, password: body.password } });
+        assert.equal(logged.status, 200);
+        assert.equal((await request('/api/auth/recovery-code', { method: 'POST', cookie: logged.cookie, body: { currentPassword: 'wrong' } })).status, 400);
+        const issued = await request('/api/auth/recovery-code', { method: 'POST', cookie: logged.cookie, body: { currentPassword: body.password } });
+        assert.equal(issued.status, 200);
+        assert.equal((await request('/api/auth/reset-password', { method: 'POST', body: { username: body.username, recoveryCode: registered.data.recoveryCode, newPassword: 'reset-password-123' } })).status, 400);
+        const resets = await Promise.all([1, 2].map(() => request('/api/auth/reset-password', { method: 'POST', body: { username: body.username, recoveryCode: issued.data.recoveryCode.toLowerCase(), newPassword: 'reset-password-123' } })));
+        assert.deepEqual(resets.map(r => r.status).sort(), [200, 400]);
+        assert.equal((await request('/api/auth/me', { cookie: logged.cookie })).status, 401);
+        assert.equal((await request('/api/auth/login', { method: 'POST', body: { username: body.username, password: body.password } })).status, 401);
+        assert.equal((await request('/api/auth/login', { method: 'POST', body: { username: body.username, password: 'reset-password-123' } })).status, 200);
+        await require('../backend/helpers/store').update('users', 'username', body.username, { active: false });
+        assert.equal((await request('/api/auth/reset-password', { method: 'POST', body: { username: body.username, recoveryCode: resets.find(r => r.status === 200).data.recoveryCode, newPassword: 'another-password-123' } })).status, 400);
+    });
     await t.test('logout and expiry invalidate cookies', async () => {
         assert.equal((await request('/api/auth/logout', { method: 'POST', cookie: alice })).status, 200);
         assert.equal((await request('/api/auth/me', { cookie: alice })).status, 401);

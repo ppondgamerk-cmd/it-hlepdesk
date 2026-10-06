@@ -42,4 +42,20 @@ async function remove(table, key, value) {
 }
 let queue = Promise.resolve();
 function locked(task) { const result = queue.then(task); queue = result.catch(() => {}); return result; }
-module.exports = { list, insert, update, remove, locked };
+async function updateWhere(table, filters, changes) {
+    if (!supabase) return locked(async () => {
+        const rows = read(table);
+        let count = 0;
+        write(table, rows.map(row => {
+            if (!Object.entries(filters).every(([key, value]) => row[key] === value)) return row;
+            count++; return { ...row, ...changes };
+        }));
+        return count;
+    });
+    let query = supabase.from(table).update(changes);
+    for (const [key, value] of Object.entries(filters)) query = query.eq(key, value);
+    const { data, error } = await query.select('username');
+    if (error) throw error;
+    return data.length;
+}
+module.exports = { list, insert, update, remove, locked, updateWhere };

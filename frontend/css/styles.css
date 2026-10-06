@@ -1034,6 +1034,8 @@ tbody tr { transition: background .15s; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 .demo-accounts { border-top: 1px solid var(--bg-card-border); padding-top: 22px; margin-top: 26px; }
+.recovery-code { display: block; overflow-wrap: anywhere; padding: 18px; margin: 16px 0; border: 1px solid #8c9cf0; border-radius: 12px; background: #192744; color: #e4e8ff; font-size: 1rem; user-select: all; }
+.account-dialog { max-height: 90vh; overflow-y: auto; }
 .demo-accounts h3 { font-size: 1rem; font-weight: 500; margin-bottom: 6px; }
 .demo-accounts > p { font-size: .78rem; margin-bottom: 14px; }
 #demo-account-list { display: grid; gap: 10px; }

@@ -113,6 +113,11 @@ function applyUserRoleLayout(pageName) {
         button.className = 'logout-btn'; button.textContent = 'เปลี่ยนรหัสผ่าน'; button.onclick = openPasswordDialog;
         profile.appendChild(button);
     }
+    if (profile && !profile.querySelector('.recovery-button')) {
+        const button = document.createElement('button');
+        button.className = 'logout-btn recovery-button'; button.textContent = 'รหัสกู้คืน';
+        button.onclick = () => openAccountDialog('recovery'); profile.appendChild(button);
+    }
     // Highlight active nav item
     document.querySelectorAll(".nav-item").forEach(item => {
         item.classList.remove("active");
@@ -803,6 +808,59 @@ async function loadDemoAccounts() {
         }
         document.getElementById('demo-accounts').hidden = false;
     } catch { /* Login remains available if demo accounts cannot be loaded. */ }
+}
+function openAccountDialog(mode) {
+    if (document.getElementById('account-dialog')) return;
+    const titles = { register: 'สมัครสมาชิก', reset: 'ตั้งรหัสผ่านใหม่', recovery: 'รับรหัสกู้คืนส่วนตัว' };
+    const descriptions = {
+        register: 'สร้างบัญชีผู้แจ้งซ่อมของคุณ และตั้งรหัสผ่านอย่างน้อย 10 ตัวอักษร',
+        reset: 'ใช้ชื่อผู้ใช้และรหัสกู้คืนที่เก็บไว้ หากไม่มีรหัสกู้คืน กรุณาติดต่อผู้ดูแลระบบ',
+        recovery: 'ยืนยันรหัสผ่านปัจจุบันเพื่อสร้างรหัสกู้คืนใหม่ รหัสกู้คืนเดิมจะใช้ไม่ได้'
+    };
+    const field = (id, label, type, autocomplete, extra = '') => `<div class="form-group"><label for="${id}">${label}</label><input id="${id}" class="form-control" type="${type}" autocomplete="${autocomplete}" ${extra} required></div>`;
+    let fields = mode === 'recovery' ? field('account-current-password', 'รหัสผ่านปัจจุบัน', 'password', 'current-password', 'maxlength="256"') : field('account-username', 'ชื่อผู้ใช้', 'text', 'username', 'pattern="[a-zA-Z0-9_.-]{3,40}" minlength="3" maxlength="40"');
+    if (mode === 'register') fields += field('account-name', 'ชื่อที่แสดง', 'text', 'name', 'maxlength="100"');
+    if (mode === 'reset') fields += field('account-recovery', 'รหัสกู้คืนส่วนตัว', 'text', 'off', 'maxlength="150" spellcheck="false"');
+    if (mode !== 'recovery') fields += field('account-password', 'รหัสผ่านใหม่', 'password', 'new-password', 'minlength="10" maxlength="128"') + field('account-confirm', 'ยืนยันรหัสผ่านใหม่', 'password', 'new-password', 'minlength="10" maxlength="128"');
+    const overlay = document.createElement('div'); overlay.id = 'account-dialog'; overlay.className = 'modal-overlay active';
+    overlay.innerHTML = `<div class="modal-content account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-title"><div class="modal-header"><h2 id="account-title">${titles[mode]}</h2><button type="button" class="modal-close" aria-label="ปิด">×</button></div><form class="modal-body"><p class="muted">${descriptions[mode]}</p>${fields}<p class="form-error" role="alert"></p><button type="submit" class="btn-submit">${mode === 'register' ? 'สร้างบัญชี' : mode === 'reset' ? 'เปลี่ยนรหัสผ่าน' : 'สร้างรหัสกู้คืน'}</button></form></div>`;
+    const close = () => overlay.remove();
+    overlay.querySelector('.modal-close').onclick = close;
+    overlay.onclick = e => { if (e.target === overlay) close(); };
+    overlay.querySelector('form').onsubmit = async e => {
+        e.preventDefault();
+        const form = e.target, error = form.querySelector('.form-error'), submit = form.querySelector('[type="submit"]');
+        error.textContent = '';
+        const value = id => overlay.querySelector('#' + id)?.value;
+        if (mode !== 'recovery' && value('account-password') !== value('account-confirm')) { error.textContent = 'รหัสผ่านทั้งสองช่องไม่ตรงกัน'; return; }
+        const username = value('account-username')?.trim();
+        const body = mode === 'register' ? { username, name: value('account-name'), password: value('account-password') } : mode === 'reset' ? { username, recoveryCode: value('account-recovery'), newPassword: value('account-password') } : { currentPassword: value('account-current-password') };
+        const endpoint = { register: 'register', reset: 'reset-password', recovery: 'recovery-code' }[mode];
+        submit.disabled = true;
+        try {
+            const response = await api('/api/auth/' + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await response.json();
+            if (!response.ok) { error.textContent = data.error || 'ไม่สามารถทำรายการได้'; return; }
+            if (username && document.getElementById('login-username')) document.getElementById('login-username').value = username;
+            const code = data.recoveryCode;
+            overlay.querySelector('.modal-close').remove(); overlay.onclick = null;
+            form.innerHTML = `<p>${mode === 'register' ? 'สร้างบัญชีสำเร็จ' : mode === 'reset' ? 'เปลี่ยนรหัสผ่านสำเร็จ' : 'สร้างรหัสกู้คืนสำเร็จ'}</p><p class="muted">เก็บรหัสนี้ไว้ในที่ปลอดภัย ระบบจะแสดงครั้งนี้เท่านั้น ใช้เพื่อตั้งรหัสผ่านใหม่เมื่อคุณลืมรหัสผ่าน${mode === 'reset' ? ' รหัสกู้คืนเดิมถูกยกเลิกแล้ว' : ''}</p><code class="recovery-code">${escapeHTML(code)}</code><button type="button" class="btn-secondary" id="download-recovery">ดาวน์โหลดรหัสกู้คืน</button><p><label><input type="checkbox" id="saved-recovery"> ฉันเก็บรหัสกู้คืนไว้แล้ว</label></p><button type="button" class="btn-submit" id="finish-recovery" disabled>${mode === 'recovery' ? 'เสร็จสิ้น' : 'กลับไปเข้าสู่ระบบ'}</button>`;
+            form.querySelector('#download-recovery').onclick = () => {
+                const url = URL.createObjectURL(new Blob([`IT Helpdesk\nUsername: ${username || currentUser.username}\nRecovery code: ${code}\nKeep this code private.\n`], { type: 'text/plain;charset=utf-8' }));
+                const link = document.createElement('a'); link.href = url; link.download = 'helpdesk-recovery-code.txt'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+            };
+            form.querySelector('#saved-recovery').onchange = e => { form.querySelector('#finish-recovery').disabled = !e.target.checked; };
+            form.querySelector('#finish-recovery').onclick = () => { if (mode === 'reset') location.replace('login.html'); else close(); };
+        } catch (err) { error.textContent = err.message || 'ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่'; }
+        finally { submit.disabled = false; }
+    };
+    document.body.appendChild(overlay); overlay.querySelector('input').focus();
+    overlay.addEventListener('keydown', e => {
+        if (e.key !== 'Tab') return;
+        const controls = [...overlay.querySelectorAll('button,input')].filter(el => !el.disabled);
+        if (e.shiftKey && document.activeElement === controls[0]) { e.preventDefault(); controls.at(-1).focus(); }
+        else if (!e.shiftKey && document.activeElement === controls.at(-1)) { e.preventDefault(); controls[0].focus(); }
+    });
 }
 function openPasswordDialog() {
     if (document.getElementById('password-dialog')) return;

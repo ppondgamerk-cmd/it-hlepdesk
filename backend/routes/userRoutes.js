@@ -19,7 +19,7 @@ router.put('/:username', async (req, res) => store.locked(async () => {
     if (!user) return res.status(404).json({ error: 'ไม่พบบัญชีผู้ใช้' });
     if (user.username === req.user.username && (role !== 'admin' || !active)) return res.status(400).json({ error: 'ไม่สามารถลดสิทธิ์หรือปิดบัญชีผู้ดูแลที่กำลังใช้งานได้' });
     const changes = { role, active };
-    if (password !== undefined) changes.password = await hashPassword(password);
+    if (password !== undefined) { changes.password = await hashPassword(password); changes.recoveryHash = null; }
     await store.update('users', 'username', user.username, changes);
     await store.remove('sessions', 'username', user.username);
     res.json(publicUser({ ...user, ...changes }));

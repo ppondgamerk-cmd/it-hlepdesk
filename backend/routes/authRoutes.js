@@ -23,6 +23,9 @@ router.get('/demo-accounts', async (req, res) => {
 });
 
 router.post('/login', require('../middleware/loginLimit'), authController.login);
+router.post('/register', require('../middleware/loginLimit'), authController.register);
+router.post('/reset-password', require('../middleware/loginLimit'), authController.resetPassword);
+router.post('/recovery-code', authenticate, require('../middleware/loginLimit'), authController.issueRecoveryCode);
 router.get('/me', authenticate, authController.me);
 router.post('/logout', authController.logout);
 router.post('/password', authenticate, authController.changePassword);

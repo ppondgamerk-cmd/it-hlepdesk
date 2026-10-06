@@ -20,6 +20,9 @@
 .auth-story .brand-icon { width: 44px; height: 44px; background: linear-gradient(145deg, #c2cbff, #8996f4); border: 1px solid #e1e5ff60; box-shadow: 0 6px 22px #6f7fdf30, inset 0 1px 0 #ffffff70; border-radius: 13px; }
 .brand-icon svg { width: 26px; height: 26px; }
 .auth-card { padding: 32px 40px; }
+.auth-actions { display: flex; justify-content: space-between; gap: 16px; margin-top: 24px; }
+.auth-actions button { background: none; border: 0; color: #b8c2ff; cursor: pointer; padding: 6px 0; font: inherit; font-size: .88rem; }
+.auth-actions button:hover { color: #fff; text-decoration: underline; }
 @media (max-width: 720px) {
     .auth-story { padding: 24px 28px; }
     .auth-card { padding: 28px; }
