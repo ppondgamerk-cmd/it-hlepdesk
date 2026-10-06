@@ -1,8 +1,18 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.*
+!.env.example
 /generated/prisma
 .agents/
 .claude/
 .windsurf/
 *.log
+
+.vercel
+data/sessions.json
+data/*.tmp
+data/users.json
+data/tickets.json
+artifacts/
+*.bak

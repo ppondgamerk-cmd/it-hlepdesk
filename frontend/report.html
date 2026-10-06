@@ -16,12 +16,13 @@
                 <span>IT HELPDESK</span>
             </div>
             
-            <nav class="nav-links">
+            <nav class="nav-links" aria-label="เมนูหลัก">
+                <a href="report.html" class="nav-item staff-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="report.html" class="nav-item user-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="tickets.html" class="nav-item user-only"><i class="fa-solid fa-list-check"></i> รายการของคุณ</a>
-                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการ Ticket</a>
-                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> คลังความรู้ (Knowledge Base)</a>
+                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> ภาพรวม</a>
+                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการแจ้งซ่อม</a>
+                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> ประวัติการแก้ไข</a>
             </nav>
 
             <div class="user-profile">
@@ -34,6 +35,7 @@
         </header>
 
         <main style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+            <div class="page-heading"><div class="eyebrow">NEW REQUEST</div><h1>แจ้งปัญหาไอที</h1><p>บอกอาการและรายละเอียด เพื่อให้ทีม IT ช่วยคุณได้ตรงจุด</p></div>
             <section id="report-view" class="view-section active">
                 <div class="workspace-grid" style="grid-template-columns: 1fr;">
                     <div class="panel-card" style="max-width: 700px; margin: 0 auto; width: 100%;">
@@ -42,7 +44,7 @@
                         <form id="report-form">
                             <div class="form-group">
                                 <label for="issue-title">หัวข้อปัญหา / อาการเบื้องต้น <span style="color:#ef4444;">*</span></label>
-                                <input type="text" id="issue-title" class="form-control" placeholder="เช่น คอมพิวเตอร์เปิดไม่ติด, ปริ้นเตอร์ไม่ทำงาน, เชื่อม Wi-Fi ไม่ได้" required>
+                                <input type="text" id="issue-title" maxlength="180" class="form-control" placeholder="เช่น คอมพิวเตอร์เปิดไม่ติด, ปริ้นเตอร์ไม่ทำงาน, เชื่อม Wi-Fi ไม่ได้" required>
                             </div>
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -52,14 +54,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="reporter-dept">แผนก <span style="color:#ef4444;">*</span></label>
-                                    <input type="text" id="reporter-dept" class="form-control" placeholder="เช่น การเงิน, บุคคล, ไอที" required>
+                                    <input type="text" id="reporter-dept" maxlength="100" class="form-control" placeholder="เช่น การเงิน, บุคคล, ไอที" required>
                                 </div>
                             </div>
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <div class="form-group">
                                     <label for="equip-code">อุปกรณ์ / รหัสเครื่องที่เกิดปัญหา</label>
-                                    <input type="text" id="equip-code" class="form-control" placeholder="เช่น Notebook-IT-01, Printer-MKT">
+                                    <input type="text" id="equip-code" maxlength="100" class="form-control" placeholder="เช่น Notebook-IT-01, Printer-MKT">
                                 </div>
                                 <div class="form-group">
                                     <label for="issue-urgency">ระดับความเร่งด่วน <span style="color:#ef4444;">*</span></label>
@@ -73,12 +75,12 @@
 
                             <div class="form-group">
                                 <label for="issue-details">รายละเอียดข้อผิดพลาดเพิ่มเติม <span style="color:#ef4444;">*</span></label>
-                                <textarea id="issue-details" class="form-control" placeholder="บอกลักษณะอาการอย่างละเอียด หรือขั้นตอนก่อนที่จะเกิดปัญหา..." required></textarea>
+                                <textarea id="issue-details" maxlength="5000" class="form-control" placeholder="บอกลักษณะอาการอย่างละเอียด หรือขั้นตอนก่อนที่จะเกิดปัญหา..." required></textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="issue-image">แนบรูปภาพหน้าจอ หรือภาพความเสียหายประกอบ (ขนาดไม่เกิน 2MB)</label>
-                                <input type="file" id="issue-image" class="form-control" accept="image/*" style="padding: 8px 12px; cursor: pointer;">
+                                <input type="file" id="issue-image" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif" style="padding: 8px 12px; cursor: pointer;">
                             </div>
 
                             <button type="submit" class="btn-submit">

@@ -1,0 +1,26 @@
+/* Compact login with the Helpdesk logo. */
+.auth-shell {
+    width: min(540px, 100%);
+    grid-template-columns: 1fr;
+    min-height: auto;
+}
+.auth-story {
+    padding: 26px 40px;
+    background: linear-gradient(120deg, #2d3c67, #1c2a46);
+    border-bottom: 1px solid #293650;
+}
+.auth-story .auth-brand {
+    margin: 0;
+    gap: 13px;
+    font-size: 1rem;
+    letter-spacing: .1em;
+    color: #eef2ff;
+}
+.auth-brand small { display: block; margin-top: 3px; font-size: .56rem; letter-spacing: .18em; color: #b0bed9; font-weight: 400; }
+.auth-story .brand-icon { width: 44px; height: 44px; background: linear-gradient(145deg, #c2cbff, #8996f4); border: 1px solid #e1e5ff60; box-shadow: 0 6px 22px #6f7fdf30, inset 0 1px 0 #ffffff70; border-radius: 13px; }
+.brand-icon svg { width: 26px; height: 26px; }
+.auth-card { padding: 32px 40px; }
+@media (max-width: 720px) {
+    .auth-story { padding: 24px 28px; }
+    .auth-card { padding: 28px; }
+}

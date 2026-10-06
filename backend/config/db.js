@@ -6,8 +6,14 @@ const DB_PATH = path.join(__dirname, '../../data', 'tickets.json');
 const USERS_PATH = path.join(__dirname, '../../data', 'users.json');
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
+const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY;
 let supabase = null;
+if (process.env.USE_SUPABASE === 'true' && (!supabaseUrl || !supabaseKey)) {
+    throw new Error('Supabase mode requires SUPABASE_URL and a server secret/service-role key.');
+}
+if (process.env.VERCEL && (!supabaseUrl || !supabaseKey || process.env.USE_SUPABASE === 'false')) {
+    throw new Error('Vercel requires Supabase server credentials and USE_SUPABASE=true; local JSON storage is not persistent.');
+}
 
 if (supabaseUrl && supabaseKey && process.env.USE_SUPABASE !== 'false') {
     try {
@@ -16,7 +22,7 @@ if (supabaseUrl && supabaseKey && process.env.USE_SUPABASE !== 'false') {
         console.log(" Successfully connected to Supabase Cloud Database!");
         console.log("=================================================");
     } catch (err) {
-        console.error("Failed to initialize Supabase client:", err);
+        throw new Error(`Failed to initialize Supabase client: ${err.message}`);
     }
 } else {
     console.log("=================================================");

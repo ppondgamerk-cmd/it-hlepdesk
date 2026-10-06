@@ -6,7 +6,19 @@ const app = express();
 const PORT = process.env.PORT || 8282;
 
 // Middleware
-app.use(express.json({ limit: '10mb' })); // Allow larger Base64 payloads
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'same-origin');
+    if (req.path.startsWith('/api/')) {
+        res.setHeader('Cache-Control', 'no-store');
+        const origin = req.headers.origin;
+        if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && origin && origin !== `${req.protocol}://${req.get('host')}` && origin !== process.env.APP_ORIGIN) return res.status(403).json({ error: 'แหล่งที่มาของคำขอไม่ถูกต้อง' });
+    }
+    next();
+});
+app.use(express.json({ limit: '3mb' }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Routes
@@ -15,6 +27,12 @@ const ticketRoutes = require('./routes/ticketRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api', (req, res) => res.status(404).json({ error: 'ไม่พบ API ที่ร้องขอ' }));
+app.use((error, req, res, next) => {
+    console.error('Request failed:', error.message);
+    res.status(error.type === 'entity.too.large' ? 413 : error.type === 'entity.parse.failed' ? 400 : 500).json({ error: error.type === 'entity.too.large' ? 'ข้อมูลมีขนาดใหญ่เกินกำหนด' : error.type === 'entity.parse.failed' ? 'รูปแบบข้อมูลไม่ถูกต้อง' : 'ระบบขัดข้อง กรุณาลองใหม่หรือติดต่อผู้ดูแล' });
+});
 
 // Redirect root to login.html
 app.get('/', (req, res) => {
@@ -22,7 +40,7 @@ app.get('/', (req, res) => {
 });
 
 // Start Server locally if not running on Vercel
-if (!process.env.VERCEL) {
+if (require.main === module && !process.env.VERCEL) {
     const server = app.listen(PORT, () => {
         console.log(`=================================================`);
         console.log(` IT Helpdesk System runs at http://localhost:${PORT}`);

@@ -18,12 +18,13 @@
                 <span>IT HELPDESK</span>
             </div>
             
-            <nav class="nav-links">
+            <nav class="nav-links" aria-label="เมนูหลัก">
+                <a href="report.html" class="nav-item staff-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="report.html" class="nav-item user-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="tickets.html" class="nav-item user-only"><i class="fa-solid fa-list-check"></i> รายการของคุณ</a>
-                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการ Ticket</a>
-                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> คลังความรู้ (Knowledge Base)</a>
+                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> ภาพรวม</a>
+                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการแจ้งซ่อม</a>
+                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> ประวัติการแก้ไข</a>
             </nav>
 
             <div class="user-profile">
@@ -36,6 +37,7 @@
         </header>
 
         <main style="flex-grow: 1; display: flex; flex-direction: column;">
+            <div class="page-heading"><div class="eyebrow">OVERVIEW</div><h1>ภาพรวมงานบริการ</h1><p>ติดตามคำขอและสถานะงานของทีม IT</p></div>
             <section id="dashboard-view" class="view-section active">
                 <!-- Statistics cards -->
                 <div class="dashboard-grid">
@@ -105,11 +107,11 @@
     </div>
 
     <!-- Details/Update Modal Overlay -->
-    <div id="ticket-modal" class="modal-overlay">
-        <div class="modal-content">
+    <div id="ticket-modal" class="modal-overlay" inert>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-label="รายละเอียดคำขอซ่อม">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> รายละเอียดคำขอซ่อม <span id="modal-ticket-id" style="color:var(--primary); margin-left:5px;">IT-XXX</span></h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close" aria-label="ปิดรายละเอียด">&times;</button>
             </div>
 
             <div class="modal-body">

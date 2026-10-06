@@ -1,0 +1,4 @@
+[
+  { "username": "it_staff", "password": "itpassword", "name": "it staff", "role": "staff", "active": true },
+  { "username": "user1", "password": "userpassword", "name": "user", "role": "user", "active": true }
+]

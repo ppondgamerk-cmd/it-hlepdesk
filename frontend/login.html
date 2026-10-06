@@ -3,46 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ - IT Helpdesk</title>
+    <title>เข้าสู่ระบบ · IT Helpdesk</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login-hero.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <div class="app-container" style="justify-content: center; min-height: 100vh;">
-        <main style="display: flex; align-items: center; justify-content: center; flex-grow: 1;">
-            <section id="login-view" class="view-section active" style="width: 100%;">
-                <div class="login-container">
-                    <div class="login-header">
-                        <i class="fa-solid fa-laptop-medical"></i>
-                        <h2>ระบบแจ้งซ่อมไอที</h2>
-                        <p>IT Helpdesk Repair Request System</p>
-                    </div>
-
-                    <form id="auth-login-form">
-                        <div class="form-group" style="text-align: left; margin-bottom: 18px;">
-                            <label for="login-username">ชื่อผู้ใช้งาน (Username) <span style="color:#ef4444;">*</span></label>
-                            <input type="text" id="login-username" class="form-control" placeholder="ระบุชื่อผู้ใช้ (เช่น user1 หรือ admin)" required>
-                        </div>
-
-                        <div class="form-group" style="text-align: left; margin-bottom: 25px;">
-                            <label for="login-password">รหัสผ่าน (Password) <span style="color:#ef4444;">*</span></label>
-                            <input type="password" id="login-password" class="form-control" placeholder="ระบุรหัสผ่าน" required>
-                        </div>
-
-                        <button type="submit" class="btn-submit">
-                            <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ
-                        </button>
-                    </form>
-
-                    <div style="margin-top: 25px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px dashed var(--bg-card-border); border-radius: 8px; font-size: 0.8rem; text-align: left;">
-                        <div style="font-weight: 600; color: #a5b4fc; margin-bottom: 6px;"><i class="fa-solid fa-circle-info"></i> บัญชีผู้ใช้สำหรับการทดสอบ:</div>
-                        <div style="color: var(--text-muted); margin-bottom: 4px;">• <strong>พนักงานทั่วไป:</strong> <code>user1</code> (รหัสผ่าน: <code>userpassword</code>)</div>
-                        <div style="color: var(--text-muted);">• <strong>เจ้าหน้าที่ IT:</strong> <code>admin</code> (รหัสผ่าน: <code>password123</code>)</div>
-                    </div>
-                </div>
+<body class="login-page">
+    <main class="auth-shell">
+        <section class="auth-story" aria-label="Helpdesk">
+            <a class="auth-brand" href="login.html"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 11H3v6h4v-6H4Zm16 0h1v6h-4v-6h3Zm0 6v2a2 2 0 0 1-2 2h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>HELPDESK<small>IT SERVICE DESK</small></span></a>
+        </section>
+        <section class="auth-card">
+            <div class="eyebrow">WELCOME BACK</div>
+            <h2>เข้าสู่ระบบ</h2>
+            <p class="auth-description">ใช้บัญชีที่ได้รับจากผู้ดูแลระบบเพื่อเริ่มใช้งาน</p>
+            <form id="auth-login-form">
+                <div class="form-group"><label for="login-username">ชื่อผู้ใช้</label><input id="login-username" class="form-control" autocomplete="username" maxlength="40" placeholder="ชื่อบัญชีของคุณ" required></div>
+                <div class="form-group"><label for="login-password">รหัสผ่าน</label><div class="password-field"><input type="password" id="login-password" class="form-control" autocomplete="current-password" maxlength="256" placeholder="รหัสผ่านของคุณ" required><button type="button" class="password-toggle" aria-label="แสดงรหัสผ่าน" aria-pressed="false" onclick="togglePassword(this)">แสดง</button></div></div>
+                <p id="login-error" class="form-error" role="alert"></p>
+                <button type="submit" class="btn-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
+            </form>
+            <section id="demo-accounts" class="demo-accounts" hidden aria-labelledby="demo-title">
+                <h3 id="demo-title">บัญชีทดลองแต่ละบทบาท</h3>
+                <p class="muted">เลือกบัญชีเพื่อกรอกชื่อผู้ใช้และรหัสผ่าน แล้วกดเข้าสู่ระบบ</p>
+                <div id="demo-account-list"></div>
             </section>
-        </main>
-    </div>
+            <p class="auth-help">ยังไม่มีบัญชี หรือลืมรหัสผ่าน?<br>ติดต่อผู้ดูแลระบบขององค์กร</p>
+            <div class="auth-footer">สิทธิ์การใช้งานจะกำหนดตามบัญชีของคุณ</div>
+        </section>
+    </main>
     <script src="js/app.js"></script>
 </body>
 </html>

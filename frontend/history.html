@@ -16,12 +16,13 @@
                 <span>IT HELPDESK</span>
             </div>
             
-            <nav class="nav-links">
+            <nav class="nav-links" aria-label="เมนูหลัก">
+                <a href="report.html" class="nav-item staff-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="report.html" class="nav-item user-only"><i class="fa-solid fa-pen-to-square"></i> แจ้งปัญหา</a>
                 <a href="tickets.html" class="nav-item user-only"><i class="fa-solid fa-list-check"></i> รายการของคุณ</a>
-                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการ Ticket</a>
-                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> คลังความรู้ (Knowledge Base)</a>
+                <a href="dashboard.html" class="nav-item staff-only"><i class="fa-solid fa-chart-pie"></i> ภาพรวม</a>
+                <a href="tickets.html" class="nav-item staff-only"><i class="fa-solid fa-ticket"></i> รายการแจ้งซ่อม</a>
+                <a href="history.html" class="nav-item staff-only"><i class="fa-solid fa-book-open"></i> ประวัติการแก้ไข</a>
             </nav>
 
             <div class="user-profile">
@@ -34,6 +35,7 @@
         </header>
 
         <main style="flex-grow: 1; display: flex; flex-direction: column;">
+            <div class="page-heading"><div class="eyebrow">RESOLVED REQUESTS</div><h1>ประวัติการแก้ไข</h1><p>ค้นดูวิธีแก้ปัญหาจากงานที่ดำเนินการเรียบร้อยแล้ว</p></div>
             <section id="history-view" class="view-section active">
                 <div class="panel-card" style="max-width: 850px; margin: 0 auto; width:100%;">
                     <h3 class="panel-title"><i class="fa-solid fa-book-open"></i> คลังความรู้และการแก้ปัญหาย้อนหลัง (Knowledge Base)</h3>
